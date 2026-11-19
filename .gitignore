@@ -1,0 +1,41 @@
+# This repository holds documentation and images only.
+# Nothing below belongs in it: secrets, configuration, databases, local state.
+
+# Secrets and credentials
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.kubeconfig
+kubeconfig*
+*token*
+*secret*
+id_rsa*
+id_ed25519*
+known_hosts
+
+# Configuration and data
+*.cfg
+*.conf
+*.ini
+*.toml
+*.yaml
+*.yml
+*.json
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.sql
+*.unl
+
+# Local state
+.DS_Store
+.claude/
+.vscode/
+.idea/
+node_modules/
+__pycache__/
