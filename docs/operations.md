@@ -53,7 +53,8 @@ The first game days changed the design. A link shut down at one end converged in
 but a *silent* failure, which neither end sees, took the full 40 seconds of OSPF's default dead
 timer, and return traffic from outside kept flowing into a dead link for about two minutes
 because of the external BGP session's default hold time. Both timers are now in the data model,
-set to seconds.
+set to seconds. The scenarios, the method and the numbers before and after are on their own page:
+[Game days](game-days.md).
 
 ## The calendar
 

@@ -149,5 +149,7 @@ machine" and "it worked in CI" are the same statement.
 
 ## Next
 
+- [A worked example](example-add-a-network.md): six lines of this model becoming a network
 - [The pipeline](pipeline.md): how a change to the model reaches the switches
+- [Game days](game-days.md): how the timers above were arrived at
 - [Setup](setup.md): how the lab is built

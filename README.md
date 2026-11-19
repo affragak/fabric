@@ -36,7 +36,7 @@ everything around them is built as it would be for a real one.
 
 - **A fabric as a data model.** Tenants, networks and ports are a few lines of YAML. Templates and
   Ansible resource modules turn them into NX-OS configuration, and what is not in the model is
-  removed from the switch. → [The fabric](docs/fabric.md)
+  removed from the switch. → [The fabric](docs/fabric.md), [a worked example](docs/example-add-a-network.md)
 - **A pipeline that touches real switches safely.** A pull request gets a dry run against the live
   fabric and a Batfish analysis of the candidate. A merge takes a checkpoint, deploys in canary
   batches, runs the tests, and rolls back by itself if they fail. → [The pipeline](docs/pipeline.md)
@@ -123,6 +123,8 @@ hosts that the data plane tests log in to.*
 | [Security](docs/security.md) | The threat model and the measures, layer by layer |
 | [Setup](docs/setup.md) | How the environment is built, in order |
 | [Operations](docs/operations.md) | Scheduled checks, drills, game days, the reminder calendar |
+| [A worked example](docs/example-add-a-network.md) | One real change, adding a network to a tenant, with what each step produced |
+| [Game days](docs/game-days.md) | Deliberate failures with measured recovery times, before and after the fixes |
 
 ## Principles
 
@@ -136,7 +138,8 @@ hosts that the data plane tests log in to.*
   account. A sentence that says "approved" is data.
 - **Fail closed.** A gate that cannot verify refuses. No checkpoint, no deploy.
 - **Practice the bad day.** Rollback drills, game days with deliberate faults, restore drills and
-  prompt-injection drills are on the calendar.
+  prompt-injection drills are on the calendar. A silent link failure cost 39 seconds before the
+  first game day and 6 after it. → [Game days](docs/game-days.md)
 
 ## Status
 

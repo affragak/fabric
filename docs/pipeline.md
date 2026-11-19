@@ -132,5 +132,7 @@ recent run.
 
 ## Next
 
+- [A worked example](example-add-a-network.md): one real change through both pipelines, with its artefacts
 - [The change workflow](change-workflow.md): the ticket behind every deploy
+- [Game days](game-days.md): changes the dry run could not judge, and what caught them
 - [Operations](operations.md): the drills and the calendar
