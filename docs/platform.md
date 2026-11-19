@@ -41,18 +41,9 @@ secrets vault and the backups.
 
 ## From a merge to the cluster
 
-```mermaid
-flowchart TB
-  pr["Pull request"] --> checks["Required checks<br/>render and validate · change gate"]
-  checks --> merge["Owner merges"]
-  merge -->|"manifests"| flux["Flux applies main"]
-  merge -->|"a component with its own image"| build["Build · Trivy scan · cosign signature"]
-  build --> promote["Tag moved to the signed digest"]
-  promote --> auto["Image automation commits<br/>the new digest to main"]
-  auto --> flux
-  flux --> admit["Admission: signature verified"]
-  admit --> run["Running"]
-```
+<p align="center">
+  <img src="../assets/diagram-image-flow.svg" width="760" alt="A pull request passes its required checks and the owner merges it. Manifests are applied by Flux. A component with its own image is built, scanned and signed, its tag is moved to the signed digest, and image automation commits the new digest to main, which Flux applies. Admission verifies the signature before anything runs.">
+</p>
 
 - **Manifests**: a pull request is rendered and validated against the Kubernetes schemas. After
   the merge Flux applies it. Nobody runs `kubectl apply`.

@@ -8,28 +8,9 @@ is derived from that description.
 
 ## Topology
 
-```mermaid
-flowchart TB
-  s11["spine-11"]
-  s12["spine-12"]
-
-  subgraph vpc ["vPC pair"]
-    l101["leaf-101"]
-    l102["leaf-102"]
-  end
-  l103["leaf-103"]
-  b1["leaf-border-1"]
-  b2["leaf-border-2"]
-
-  s11 --- l101 & l102 & l103 & b1 & b2
-  s12 --- l101 & l102 & l103 & b1 & b2
-
-  l101 & l102 --- h12["Dual-homed host"]
-  l101 --- h14["Host"]
-  l102 --- h15["Host"]
-  l103 --- h3["Hosts"]
-  b1 & b2 --- ext["External router<br/>eBGP per tenant"]
-```
+<p align="center">
+  <img src="../assets/diagram-topology.svg" width="760" alt="Two spines, each linked to three leafs and two border leafs. Leaf-101 and leaf-102 are a vPC pair with a dual-homed host. The border leafs peer with an external router by eBGP, one session per tenant.">
+</p>
 
 | Switch | Role | Notes |
 |---|---|---|

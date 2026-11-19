@@ -8,29 +8,9 @@ clears.
 
 ## From the switch to a ticket
 
-```mermaid
-flowchart LR
-  sw["Nexus switches"]
-
-  sw -->|"gNMI, streaming"| telegraf["Telegraf"]
-  sw -->|"SNMPv3"| snmp["SNMP exporter"]
-  sw -->|"syslog · SNMPv3 traps"| logstash["Logstash"]
-
-  telegraf --> prom["Prometheus"]
-  telegraf --> influx["InfluxDB"]
-  snmp --> prom
-  logstash --> es["Elasticsearch"]
-  logstash -->|"selected events"| am
-
-  prom -->|"alarm rules"| am["Alertmanager"]
-  am --> chat["Chat"]
-  am --> bridge["Alarm bridge"]
-  bridge --> zammad["Zammad<br/>one ticket per alarm"]
-  am -->|"heartbeat"| dead["Dead-man's switch"]
-
-  prom & es & influx --> grafana["Grafana"]
-  prom & zammad --> mc["Mission Control"]
-```
+<p align="center">
+  <img src="../assets/diagram-telemetry.svg" width="760" alt="The switches send gNMI to Telegraf, answer SNMP to the SNMP exporter, and send syslog and traps to Logstash. Telegraf and the exporter feed Prometheus, which Grafana reads; Logstash feeds Elasticsearch. Prometheus's alarm rules and selected events from Logstash reach Alertmanager, which notifies the chat, sends a heartbeat to a dead-man's switch, and calls the alarm bridge, which opens and closes one ticket per alarm.">
+</p>
 
 ## Sources
 

@@ -17,21 +17,9 @@ Two different acts are easy to confuse, so they have two different names:
 
 ## The states of a change ticket
 
-```mermaid
-stateDiagram-v2
-  [*] --> new: the agent opens the ticket
-  new --> assess: the pull request is open
-  assess --> approved: the OWNER, after the dry run
-  approved --> assess: a new commit, or an approval too early
-  approved --> implementing: the PIPELINE, right before the deploy
-  implementing --> review: the agent, after verifying
-  review --> closed: the OWNER
-  implementing --> approved: the OWNER, to re-run a failed deploy
-  implementing --> assess: a revert or fix pull request
-  assess --> rejected: the OWNER
-  closed --> [*]
-  rejected --> [*]
-```
+<p align="center">
+  <img src="../assets/diagram-ticket-states.svg" width="760" alt="new, assess, approved, implementing, review, closed. Approved goes back to assess on a new commit or an approval given too early. Implementing goes back to approved when the owner re-runs a failed deploy, or to assess with a revert or fix pull request. Assess can end as rejected. The agent sets new, assess and review; the owner sets approved, closed and rejected; the pipeline sets implementing.">
+</p>
 
 | State | Set by | When |
 |---|---|---|

@@ -22,16 +22,9 @@ operating-system user with its own accounts in the forge and the ticket system.
 
 ## How work reaches them
 
-```mermaid
-flowchart LR
-  owner(["Owner"]) <-->|"one chat thread per task<br/>approval buttons"| bridge["Chat bridge"]
-  bridge <--> lead["Lead"]
-  lead -->|"tasks"| workers["Network engineer · platform engineer<br/>SRE · writer"]
-  workers -->|"reports"| lead
-  lead -->|"reviews"| prs["Pull requests"]
-  workers --> prs
-  timers["Timers<br/>alarm triage · change follow-up · daily digest"] --> workers
-```
+<p align="center">
+  <img src="../assets/diagram-agents.svg" width="760" alt="The owner talks to the lead through a chat bridge, one thread per task, with approval buttons. The lead gives tasks to the workers and gets reports back, and reviews pull requests, which the workers open. Timers wake the workers for alarm triage, change follow-up and the daily digest.">
+</p>
 
 - **The owner talks to them in chat**, one thread per task. The bridge accepts messages from the
   owner's account only.

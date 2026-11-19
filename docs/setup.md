@@ -4,21 +4,12 @@
 
 How the environment is put together. The source is private, so this is not a tutorial to copy and
 paste; it is the build order and the reasons, enough for someone who wants to build the same kind
-of thing. Each layer needs the ones before it.
+of thing. Each layer needs the ones below it: the diagram reads from the bottom up, and the sections
+follow in the same order.
 
-```mermaid
-flowchart TB
-  l1["1 · The lab<br/>hypervisor, nodes, cabling"] --> l2["2 · Day zero on each switch"]
-  l2 --> l3["3 · The toolchain and the data model"]
-  l3 --> l4["4 · First deploy, tests, baseline"]
-  l4 --> l5["5 · The platform<br/>cluster, forge, runners"]
-  l5 --> l6["6 · The pipeline"]
-  l6 --> l7["7 · Telemetry and alarms"]
-  l7 --> l8["8 · Tickets and the record<br/>Zammad, NetBox"]
-  l8 --> l9["9 · Change control<br/>the gate, the enforced states"]
-  l9 --> l10["10 · The agents"]
-  l10 --> l11["11 · Mission Control"]
-```
+<p align="center">
+  <img src="../assets/diagram-build-order.svg" width="760" alt="Eleven layers, each needing the ones below it: 1 The lab; 2 Day zero; 3 Toolchain and data model; 4 First deploy; 5 The platform; 6 The pipeline; 7 Telemetry and alarms; 8 Tickets and the record; 9 Change control; 10 The agents; 11 Mission Control.">
+</p>
 
 ## 1. The lab
 

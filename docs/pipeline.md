@@ -8,16 +8,9 @@ toolchain image.
 
 ## A pull request
 
-```mermaid
-flowchart TB
-  pr["Pull request"] --> validate["validate<br/>no access to the fabric"]
-  validate --> held{"From a fork?"}
-  held -->|"yes"| release["Owner reads the diff<br/>and releases the run"]
-  held -->|"no"| dry
-  release --> dry["Dry run<br/>check mode on the live fabric"]
-  dry --> batfish["Batfish<br/>on the candidate configuration"]
-  batfish --> comment["Result on the pull request<br/>and on the change ticket"]
-```
+<p align="center">
+  <img src="../assets/diagram-pr-pipeline.svg" width="760" alt="A pull request is validated without access to the fabric. A fork's run waits until the owner releases it. Then the dry run in check mode against the live fabric, Batfish on the candidate configuration, and the result on the pull request and on the change ticket.">
+</p>
 
 ### validate
 
@@ -74,23 +67,9 @@ pass all of them.
 
 ## A merge
 
-```mermaid
-flowchart TB
-  merge["Merge to main"] --> decide{"What changed?"}
-  decide -->|"docs, tests, CI"| none["Nothing deploys"]
-  decide -->|"tenants only"| tenant["tenant"]
-  decide -->|"anything else"| full["full"]
-  tenant & full --> gate["Change gate<br/>ticket approved, after the dry run"]
-  gate -->|"refused"| stop["Stop. Nothing was touched"]
-  gate --> snap["Snapshot of the operational state"]
-  snap --> cp["Checkpoint on every switch in scope"]
-  cp --> impl["Ticket → implementing"]
-  impl --> canary["Deploy in batches, canary first<br/>test after each batch"]
-  canary --> tests["Full test run"]
-  tests -->|"pass"| save["Save the configuration"]
-  tests -->|"fail"| rollback["Roll back to the checkpoint<br/>test again"]
-  save --> after["NetBox branch merged · snapshot diff · baseline<br/>Batfish on the live state · docs · reports"]
-```
+<p align="center">
+  <img src="../assets/diagram-merge-pipeline.svg" width="760" alt="After a merge the changed files decide whether nothing, the tenants or everything deploys. The change gate requires an approved ticket, approved after the dry run. Then a snapshot and a checkpoint, the ticket moves to implementing, the deploy runs in canary batches with a test after each, and the full tests run. On a pass the configuration is saved and the records are updated; on a failure the switches roll back to the checkpoint.">
+</p>
 
 | Step | What it does | If it fails |
 |---|---|---|

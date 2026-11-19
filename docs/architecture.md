@@ -32,19 +32,9 @@ workflows of the component it changes.
 
 ## Where things run
 
-```mermaid
-flowchart TB
-  pi["Raspberry Pi 5<br/>agents · fabric MCP server<br/>identity provider · cluster management"]
-  k8s["Kubernetes cluster<br/>forge and runners · monitoring and logging<br/>tickets · NetBox · Mission Control · docs"]
-  lab["Lab server<br/>EVE-NG: 7 × Nexus 9000v<br/>external router · lab hosts"]
-  nas["Storage server<br/>vault · backups · git mirrors"]
-
-  pi -->|"pull requests, tickets"| k8s
-  pi -.->|"read-only show commands"| lab
-  k8s -->|"deploys, from one runner"| lab
-  lab -->|"gNMI · SNMP · syslog · traps"| k8s
-  k8s -->|"reads secrets, writes backups"| nas
-```
+<p align="center">
+  <img src="../assets/diagram-placement.svg" width="760" alt="A Raspberry Pi 5 runs the agents, the fabric MCP server, the identity provider and the cluster's management; it sends pull requests and tickets to the Kubernetes cluster and has a read-only view of the lab. The cluster deploys to the lab from one runner and receives its telemetry, reads secrets from and writes backups to a storage server.">
+</p>
 
 | Place | What runs there | Why there |
 |---|---|---|
