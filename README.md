@@ -55,31 +55,9 @@ everything around them is built as it would be for a real one.
 
 ## Architecture
 
-```mermaid
-flowchart TB
-  owner(["Owner<br/>releases · approves · merges"])
-  agents["Agent team<br/>changes · triage · reviews"]
-  repo[("Git<br/>data model · roles · manifests")]
-  ci["Pipeline<br/>validate · dry run · gate · deploy · test"]
-  fabric["VXLAN/EVPN fabric<br/>7 × Nexus 9000v in EVE-NG"]
-  obs["Telemetry<br/>Prometheus · Elasticsearch · Grafana"]
-  tickets["Tickets<br/>alarms and changes"]
-  netbox["NetBox<br/>the record"]
-  mc["Mission Control<br/>reads all of it"]
-
-  owner <-->|"chat"| agents
-  agents -->|"pull requests"| repo
-  owner -->|"merge"| repo
-  repo --> ci
-  ci -->|"checkpoint · canary · rollback"| fabric
-  agents -.->|"read-only"| fabric
-  fabric -->|"gNMI · SNMP · syslog"| obs
-  obs -->|"alarms open and close"| tickets
-  owner -->|"approve"| tickets
-  tickets -.->|"the gate reads the ticket"| ci
-  ci -->|"merges the change's branch"| netbox
-  obs & tickets & netbox --> mc
-```
+<p align="center">
+  <img src="assets/architecture.svg" width="760" alt="Architecture: the owner chats with an agent team, merges into Git and approves tickets. The agents open pull requests and have a read-only view of the fabric. The pipeline deploys to the fabric with checkpoint, canary and rollback, merges the change's branch into NetBox, and its gate reads the ticket. The fabric sends telemetry, whose alarms open and close tickets. Mission Control reads telemetry, tickets and NetBox.">
+</p>
 
 More detail, component by component: [Architecture](docs/architecture.md).
 

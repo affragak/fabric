@@ -5,6 +5,14 @@
 The project is one monorepo with five components, and four places where things run. This page
 says what each part is, where it lives and what it may reach.
 
+<p align="center">
+  <img src="../assets/architecture.svg" width="760" alt="Architecture: owner, agent team, Git, pipeline, the VXLAN/EVPN fabric, telemetry, tickets, NetBox and Mission Control, with who acts on what and who only reads.">
+</p>
+
+Solid lines act; dashed lines only read. The agents and the pipeline's gate are on dashed lines
+on purpose: an agent can look at the fabric but not touch it, and the gate reads a ticket but
+cannot change one.
+
 ## The components
 
 | Component | What it is |
