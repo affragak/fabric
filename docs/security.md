@@ -113,4 +113,5 @@ A security plan that only lists strengths is a brochure. This one is a table wit
 
 ## Next
 
+- [Decisions and limits](decisions.md): why the pipeline trusts whom it trusts
 - [Operations](operations.md): the drills that keep these measures honest

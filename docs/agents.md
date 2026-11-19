@@ -127,5 +127,6 @@ Its procedures are written down as skills, versioned with the fabric:
 
 ## Next
 
+- [Questions and answers](faq.md): the short version of why the agents are limited as they are
 - [The change workflow](change-workflow.md): the procedure the agents work in
 - [Security](security.md): the same limits from the defender's side

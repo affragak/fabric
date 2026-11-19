@@ -87,6 +87,11 @@ On 19 November 2026 a one-line change (a description on a host port of leaf-101)
 flow, with one deliberate deviation: a second commit pushed after the approval, to prove that a
 stale approval is caught. Times are UTC; the step is what Mission Control showed.
 
+![The change replayed: the Changes panel at each of its eighteen states](../assets/change-replay.gif)
+
+*A replay, not a screen recording: the real page, drawn once for each state that was recorded
+while the change ran, with the real times. It loops in about forty seconds.*
+
 | Time | Step | Waits for | Ticket | What happened |
 |---|---|---|---|---|
 | 11:20 | 1 Pull request | the agent | `new` | The agent opened the ticket after its pre-checks |

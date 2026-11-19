@@ -32,15 +32,10 @@ The result is one comment on the pull request, rewritten on every push: a table 
 errors per switch, and Batfish's verdict. The commands themselves go to a private reports package,
 not into the pull request.
 
-| Host | Changes | Errors |
-|---|---|---|
-| leaf-101 | 1 | 0 |
-| leaf-102 | 0 | 0 |
-| leaf-103 | 0 | 0 |
-| leaf-border-1 | 0 | 0 |
-| … | | |
+![The dry-run comment on a pull request](../assets/forgejo-dry-run-comment.png)
 
-*The dry-run table of a one-line change: one command on one switch, nothing anywhere else.*
+*The comment on a real pull request: a one-line change, one command on one switch, nothing
+anywhere else, and Batfish's verdict on the candidate.*
 
 **Forks are held.** The dry run executes the pull request's own code with the key that can
 configure the switches. So a pull request from a fork, which is how the agents work, runs nothing

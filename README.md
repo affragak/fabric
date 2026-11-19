@@ -83,6 +83,11 @@ it, the gate would refuse the merge, and the ticket is moved back. On 19 Novembe
 change ran all nine steps, with that deviation on purpose, in 78 minutes.
 → [The change workflow](docs/change-workflow.md)
 
+![The change replayed in Mission Control, state by state](assets/change-replay.gif)
+
+*That change, replayed from the states the page showed while it ran. At 11:41 the second commit
+arrives and the approval stops counting.*
+
 ![The page of one change: its steps, its pull request and everything that happened, in order](assets/mission-control-change.png)
 
 ## The lab
@@ -125,6 +130,8 @@ hosts that the data plane tests log in to.*
 | [Operations](docs/operations.md) | Scheduled checks, drills, game days, the reminder calendar |
 | [A worked example](docs/example-add-a-network.md) | One real change, adding a network to a tenant, with what each step produced |
 | [Game days](docs/game-days.md) | Deliberate failures with measured recovery times, before and after the fixes |
+| [Decisions and limits](docs/decisions.md) | The decision records, the choices that show in the design, and what the lab does not claim |
+| [Questions and answers](docs/faq.md) | Why tickets gate deploys, why agents cannot merge, what it takes to build |
 
 ## Principles
 
