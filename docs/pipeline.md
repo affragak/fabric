@@ -93,8 +93,8 @@ tested from the moment it is merged. The state is read with pyATS and Genie pars
 | **Control plane** | EVPN neighbours established; each tenant VRF up and no VRF that should not exist; L2 and L3 VNIs up; the exact set of VTEP peers; route targets; the border's eBGP sessions per tenant; vPC health; CPU, memory and core files; the telemetry certificate |
 | **Data plane** | From the lab hosts, over their consoles: the gateway answers; the outside is reachable; hosts of one tenant reach each other; a tenant reaches shared services; tenants do **not** reach each other; a host without external access does **not** get out |
 
-Fourteen test cases, each looping over the switches or host pairs it applies to: 67 results in a
-recent run.
+Fourteen test cases, each looping over the switches or host pairs it applies to: 74 results in a
+current run.
 
 ## Between changes
 
@@ -114,6 +114,16 @@ recent run.
 | A reports package per run | Test results, the plan, drift and state diffs, configurations. Private |
 | The baseline | The operational state the next drift check compares with |
 | Wiki pages | Tenants, fabric and border, rendered from the data model after every successful deploy |
+| A message in chat | The run stage by stage, the gate's verdict, what deployed, the canary batches and the test counts |
+
+![The chat message of a deploying merge](../assets/slack-pipeline-passed.png)
+
+*A merge that deployed: every stage, the gate naming the ticket it checked and that the approval
+came after the dry run, the ticket moved to implementing, and the tests of each canary batch.*
+
+![The chat message of a merge that deploys nothing](../assets/slack-pipeline-no-deploy.png)
+
+*A merge that changed no switch: nothing deploys, and the tests and Batfish run all the same.*
 
 ## Why it can be trusted
 

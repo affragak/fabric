@@ -14,6 +14,11 @@ that are practised on purpose, and the calendar that makes sure neither is forgo
 | Once a day | A read-only digest of the fabric: health, alarms, changes, pipeline, what is due | One message |
 | Always | Alarm rules on telemetry and events | Tickets that open and close themselves |
 
+![The daily digest in chat](../assets/slack-digest.png)
+
+*The daily digest on a quiet morning: health, alarms, changes, the pipeline's last day, and what
+is due.*
+
 ### Two kinds of drift
 
 - **Configuration drift**: a dry run of `main` against the live switches. Any pending command

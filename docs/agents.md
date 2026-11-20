@@ -34,6 +34,11 @@ operating-system user with its own accounts in the forge and the ticket system.
 - **Timers do the waiting.** A conversation turn ends when the agent replies. Scheduled runs pick
   up what happened since: a released run, a finished deploy, a new alarm.
 
+![A scheduled run's triage of an alarm, in chat](../assets/slack-alarm-triage.png)
+
+*What a scheduled run leaves in chat: an alarm triaged three minutes after it fired, with the
+evidence, a confidence, and the decision left to the owner.*
+
 ## What an agent can see
 
 The network engineer does not log in to switches. It asks a **Model Context Protocol server** that

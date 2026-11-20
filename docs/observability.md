@@ -117,6 +117,23 @@ In the picture the switch's management address and the site's name are replaced;
 shortened and otherwise as written. Nobody had to act, nothing was touched, and the record says
 what it was.
 
+### The same in chat
+
+The next morning the same kind of alarm fired on another link. In the chat channel it reads like
+this, in local time: the alarm, ten minutes later its resolution,
+
+![An alarm firing and resolving in chat](../assets/slack-alarm.png)
+
+and in between, three minutes after it fired, the agent's triage from its scheduled run:
+
+![The agent's triage in chat](../assets/slack-alarm-triage.png)
+
+The triage does more than dismiss it. It counts (the sixteenth such alarm on the uplinks in two
+days), names the cause (a synthetic counter of the virtual switch, with the real error counters at
+zero), and puts the decision where it belongs: whether to change the alarm rule so that it counts
+real errors or a sustained rate. The fix for a noisy alarm is a change to the rule, through a
+pull request, not a habit of ignoring it.
+
 ## Dashboards
 
 | Dashboard | Shows |
