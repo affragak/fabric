@@ -10,9 +10,8 @@ and the network between them, and everything around them is built as it would be
 
 ![Mission Control, the fabric's status page](assets/mission-control-overview.png)
 
-*Mission Control: live state of the fabric, its alerts, changes in flight and pipeline. The picture
-is from 19 November 2026, when the fabric was one site of seven switches; the page now draws both
-sites.*
+*Mission Control on 25 November 2026: both sites and the inter-site network, each switch's state,
+and what waits for the owner.*
 
 > **About this repository.** This is the public overview: architecture, setup and workflows. The
 > source, the data model and the manifests live in a private Forgejo repository. Host names,

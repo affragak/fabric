@@ -7,10 +7,8 @@ that already hold the answers and changes nothing: no button on it does anything
 
 ![Mission Control, the whole page](../assets/mission-control-overview-full.png)
 
-> **About the pictures.** The screenshots on this page are from 19 November 2026, when the fabric
-> was one site of seven switches. The page has since been adapted to the fabric of two sites: the
-> Fabric panel and the NetBox comparison look different now, as described under
-> [The topology](#the-topology) below. The other panels are as shown.
+*The live page on 25 November 2026. The pictures of the switch and of NetBox below are from the
+same minute; the panels with serial numbers and management addresses are left out of them.*
 
 ## What is on it
 
@@ -23,7 +21,7 @@ that already hold the answers and changes nothing: no button on it does anything
 | **Changes** | Each open change: its step of nine, who it waits for, and in words what is awaited | The ticket system and the forge |
 | **Fabric pipeline** | What runs now with its usual and its longest duration, the last deploy, the last scheduled test, the last 24 jobs | The forge |
 | **Tickets** | Open and pending, in progress, the last closed | The ticket system |
-| **Drift and records** | Is `main` deployed, does the fabric match its baseline, does NetBox agree with the fabric, when was the last rollback drill | The forge, NetBox |
+| **Drift and records** | Is `main` deployed, does the fabric match its baseline, does NetBox agree with the fabric, does every switch serve a telemetry certificate with time left, when was the last rollback drill | The forge, NetBox |
 | **Coming up** | The next operations tasks: rotations, updates, drills | The reminder calendar in Git |
 | **The monitoring itself** | Is the collector up, how many telemetry streams and SNMP polls work | Prometheus |
 | **Latest activity** | Alarms, pipeline jobs, changes and closed tickets in one timeline | All of the above |
@@ -102,8 +100,8 @@ steps, every note, and who did each.
 State and uptime, CPU and memory over 24 hours, every alarm of the last seven days on a time
 line, every enabled interface with speed, traffic, utilisation and errors, the BGP neighbours,
 OSPF adjacencies and VTEP peers one by one, the links to other switches, and the newest tickets
-that name the switch. The picture is leaf-101 before the fourth leaf joined; it has since gained
-leaf-104 as a VTEP peer.
+that name the switch. The picture is leaf-101, one half of the vPC pair: its site and AS under
+its name, and the four VTEPs of its site that it should see.
 
 ### NetBox against the fabric
 
@@ -121,9 +119,13 @@ compares it three ways:
 It also lists NetBox branches of changes that were deployed but never merged.
 
 The comparison covers every site of the fabric. A site of which NetBox records nothing at all is
-one difference for the whole site, not one per switch, link and address. On 25 November 2026
-there was one such difference: the inter-site network, whose two routers and five links were not
-recorded in NetBox yet. The picture above shows the first site alone, in agreement.
+one difference for the whole site, not one per switch, link and address.
+
+The picture shows the page finding something, on 25 November 2026. The inter-site network is not
+recorded in NetBox yet: one difference, for its two routers and five links. Each spine of DC-2
+reports an interface that NetBox lacks. And the NetBox branch of a change in flight is ready and
+not merged, as it should be before its deploy. Twelve of fourteen switches and eighteen of
+twenty-three links are recorded.
 
 ## How it is built
 
