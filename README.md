@@ -102,10 +102,9 @@ arrives and the approval stops counting.*
 
 ![The fabric on the EVE-NG canvas](assets/eve-ng-topology.png)
 
-*The first site as it stood on 19 November 2026: seven Nexus 9000v, an external router beyond the
-border leafs, and six lab hosts that the data plane tests log in to. The lab now holds fourteen
-switches: a fourth leaf here, the four switches of DC-2 and the two inter-site routers.
-→ [The topology today](docs/fabric.md#topology)*
+*The lab in EVE-NG: fourteen Nexus 9000v in two sites and the inter-site network, an external
+router beyond DC-1's border leafs, six lab hosts that the data plane tests log in to, and the
+POAP server next to the management switch. → [The topology](docs/fabric.md#topology)*
 
 ## Technology
 

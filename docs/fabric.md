@@ -42,11 +42,11 @@ off DC-1's leafs; the data plane tests log in to them and ping.
 How the two sites are joined, and what crosses between them, is on the page about
 [Multi-Site](multisite.md).
 
-![The first site on the EVE-NG canvas](../assets/eve-ng-topology.png)
+![The lab on the EVE-NG canvas](../assets/eve-ng-topology.png)
 
-*The first site as drawn in EVE-NG on 19 November 2026, including the out-of-band management
-switch on the left. Since then the canvas has gained leaf-104, DC-2, the two inter-site routers
-and the POAP server.*
+*The lab as drawn in EVE-NG: the two sites, the inter-site network above them, the external
+connection of DC-1 at the top left, and the out-of-band management switch with the POAP server on
+the left.*
 
 ## Underlay
 

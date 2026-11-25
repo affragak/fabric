@@ -22,9 +22,7 @@ follow in the same order.
 | Access | The web interface over HTTPS with a real certificate; consoles firewalled to named hosts |
 | Care | Backed up before changes; patched by hand once a month with the lab stopped |
 
-![The first site in EVE-NG](../assets/eve-ng-topology.png)
-
-*The first site, as it stood on 19 November 2026.*
+![The lab in EVE-NG](../assets/eve-ng-topology.png)
 
 ## 2. Day zero on each switch
 

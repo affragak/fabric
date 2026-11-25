@@ -153,8 +153,8 @@ pull request, not a habit of ignoring it.
 
 ![The SNMP interfaces dashboard](../assets/grafana-snmp-interfaces.png)
 
-*SNMP interfaces, six hours on 19 November 2026, when the fabric had seven switches: polling works
-for all of them, every enabled port is up, no alarm fires, and the traffic of a quiet lab.*
+*SNMP interfaces, six hours on 25 November 2026: polling works for all fourteen switches, every
+enabled port is up, no alarm fires, and the traffic of a quiet lab.*
 
 ![The syslog and traps dashboard](../assets/grafana-syslog-traps.png)
 
