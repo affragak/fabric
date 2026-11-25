@@ -17,7 +17,7 @@ cannot change one.
 
 | Component | What it is |
 |---|---|
-| **core-fabric** | The fabric itself: the Ansible data model, roles and templates, the JSON schema, the pyATS and Batfish tests, the pipeline's scripts, and a read-only MCP server that answers questions about the switches |
+| **core-fabric** | The fabric itself: the Ansible data model of both sites and the inter-site network, roles and templates, the JSON schema, the pyATS and Batfish tests, the pipeline's scripts, the POAP server that provisions new switches, and a read-only MCP server that answers questions about the switches |
 | **platform** | The Kubernetes cluster as Flux manifests: networking, certificates, secrets, databases, and every application the fabric depends on |
 | **telemetry** | The gNMI collector image; the rest of the monitoring is configured in *platform* |
 | **ops-automation** | The agents: their definitions, the chat bridge, the approval hook, the scheduler and the host setup |
@@ -38,7 +38,7 @@ workflows of the component it changes.
 
 | Place | What runs there | Why there |
 |---|---|---|
-| **Lab server** | EVE-NG Professional on bare metal: the seven switches as KVM nodes, an external router and six lab hosts | The fabric needs nested virtualisation and memory; it is patched by hand, with the lab stopped |
+| **Lab server** | EVE-NG Professional on bare metal: the fourteen switches of both sites and the inter-site network as KVM nodes, an external router, six lab hosts and the POAP server | The fabric needs nested virtualisation and memory; it is patched by hand, with the lab stopped |
 | **Kubernetes cluster** | The forge and its runners, monitoring, logging, tickets, NetBox, Mission Control, the docs site | Everything that is an application is deployed by GitOps |
 | **Raspberry Pi 5** | The agents, the fabric MCP server, the identity provider and the cluster's management plane | They must stay up when the cluster is down or being rebuilt |
 | **Storage server** | Vault, an object store for database backups, backup repositories, mirrors of the Git repositories | Secrets and backups must not live on the thing they protect |
@@ -56,6 +56,12 @@ Only three things have a network path to the switches' management addresses, eac
 The pull-request runner, the image-build runner, the agents' own accounts and every other pod
 have no key and no route. Network policies in the cluster are default-deny; the route to the
 management network is granted to the deploy runner by name.
+
+Two more things touch a switch's life without logging in to it. The **POAP server**, a small
+container on the lab's management network, answers a new switch's first boot with a minimal
+configuration rendered from `main`; it holds no secret and no private key. The **sign runner** has the
+certificate authority sign a switch's telemetry certificate; its network reaches the forge and the
+vault and no switch ([Security](security.md#certificates-for-telemetry)).
 
 ## How a change flows through it
 
@@ -78,7 +84,7 @@ anything that matters, and Flux applying what was merged.
 
 | Question | Answer comes from |
 |---|---|
-| What should the fabric look like? | The data model in Git |
+| What should the fabric look like? | The data model in Git: which switches, in which site, linked how, with which tenants |
 | What does it look like now? | The switches (through pyATS and the MCP server) and telemetry |
 | What is documented about it? | NetBox, compared with both of the above |
 | What was changed, by whom, and was it approved? | The change ticket and the pull request |
@@ -90,5 +96,6 @@ switch is reported with all three values and corrected through a change, never s
 ## Next
 
 - [The fabric](fabric.md): the design the data model describes
+- [Multi-Site](multisite.md): the two sites and what joins them
 - [The pipeline](pipeline.md): what happens between a pull request and a deployed change
 - [The platform](platform.md): the cluster in detail

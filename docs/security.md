@@ -79,6 +79,43 @@ Details: [The agents](agents.md).
 | Unknown local users are removed | An account that is not in the model does not survive a deploy |
 | The lab's consoles are firewalled | Only named hosts reach the hypervisor's consoles and its web interface, over HTTPS |
 | The lab host is patched by hand | After an unattended upgrade once stopped every node, updates happen monthly, with the lab stopped |
+| A new switch starts locked | The configuration a switch gets at its first boot holds locked accounts and one public key, nothing confidential; the pipeline cannot reach the switch until its host key is pinned by a pull request |
+| Telemetry certificates from the fabric's own CA | Every switch's gNMI server presents a certificate that the collector verifies; details below |
+
+### Certificates for telemetry
+
+Without a certificate of its own, a switch's gRPC server makes itself a self-signed one that is
+valid for a day and is not renewed. Telemetry then only works with verification switched off,
+which is how the lab ran at first. Now every one of the fourteen switches serves a certificate
+from the fabric's own certificate authority, and the collector verifies it.
+
+| Part | How it is built |
+|---|---|
+| Root CA | Offline; its key never touches the vault or a networked host. Ten years |
+| Issuing CA | In the vault's PKI engine; its key was generated there and cannot be exported; its certificate is signed by the root. Five years |
+| Switch keys | Made on the switch, not exportable; never in the vault or in Git |
+| Switch certificates | One year, for the switch's name and its management address |
+| Enrolment | One manual run of a workflow per switch: the switch makes its key and a signing request, the request is checked, the vault signs it, the certificate is imported and read back |
+| Binding | A setting in the data model, deployed like any change: the role refuses to bind a trustpoint that holds no certificate |
+| Proof | A test in every run makes a TLS handshake to each switch's gRPC port and requires a certificate from this CA, for this switch, accepted by a verifying client |
+
+At first the owner signed each request by hand between two runs. With six new switches and a
+renewal every year that became the slow part, so the vault now signs inside the run. What keeps
+that from being a signing oracle:
+
+| Measure | Effect |
+|---|---|
+| No stored credential | The signing job logs in to the vault with its own short-lived identity token from the forge. There is no secret to steal from the forge, the runner or the repository |
+| Only `main` signs | The vault's role accepts only a token that names this repository, this workflow file, the `main` branch and a manual start. A workflow edited on a branch gets a token that cannot log in |
+| What is signed comes from the model | The name and the address in the certificate are taken from the data model, never from the request or the run's inputs, and the address must be the switch's own management address |
+| A runner of its own | The signing job runs on a runner that takes no other job: a fresh container per job, no checkout and no repository code, and a network that reaches the forge and the vault and nothing else, no switch included |
+| Short-lived everything | The vault token lasts minutes and a few uses, and is revoked when the job ends; the vault records every certificate it signs |
+| A fallback | The two-run path with the owner signing in between still works, and deleting one role in the vault switches the automatic path off |
+
+What remains is said in the design as well: the runner's pod is the boundary, not a sandbox of
+its own. Whoever controls that pod or its node could read a token while a job runs, and could
+then have server certificates signed for a year. That would let someone pose as a switch to the
+collector; it gives no login to a switch, no other path in the vault and no CA key.
 
 ### Secrets
 
@@ -114,4 +151,5 @@ A security plan that only lists strengths is a brochure. This one is a table wit
 ## Next
 
 - [Decisions and limits](decisions.md): why the pipeline trusts whom it trusts
+- [Setup](setup.md#2-day-zero-on-each-switch): how a new switch gets its first configuration
 - [Operations](operations.md): the drills that keep these measures honest

@@ -27,7 +27,7 @@ modest: one node, sized for a lab, and built so that losing it loses nothing.
 | Application | Purpose |
 |---|---|
 | **Forgejo** | The Git forge, its container registry and package registry |
-| **Runners** | Three kinds, separated by what they may reach: pull requests (nothing), deploys (the switches), image builds (the registry) |
+| **Runners** | Four kinds, separated by what they may reach: pull requests (nothing), deploys (the switches), image builds (the registry), and one that only signs switch certificates (the forge and the vault) |
 | **Monitoring** | Prometheus, Alertmanager, Grafana, the SNMP exporter |
 | **Telemetry** | The gNMI collector and its time-series store |
 | **Logging** | Logstash for the switches' syslog and traps, Elasticsearch, Loki and a collector for the platform's own logs |

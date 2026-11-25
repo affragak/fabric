@@ -5,12 +5,14 @@ software is: one data model in Git, a pipeline that proves a change before and a
 switch, tickets that gate every deploy, telemetry that opens and closes its own alarms, and a team
 of AI agents that does the routine work inside hard limits.
 
-It is a lab. Seven virtual Nexus 9000v switches in EVE-NG stand in for a small data centre, and
-everything around them is built as it would be for a real one.
+It is a lab. Fourteen virtual Nexus 9000v switches in EVE-NG stand in for two small data centres
+and the network between them, and everything around them is built as it would be for real ones.
 
 ![Mission Control, the fabric's status page](assets/mission-control-overview.png)
 
-*Mission Control: live state of the fabric, its alerts, changes in flight and pipeline.*
+*Mission Control: live state of the fabric, its alerts, changes in flight and pipeline. The picture
+is from 19 November 2026, when the fabric was one site of seven switches; the page now draws both
+sites.*
 
 > **About this repository.** This is the public overview: architecture, setup and workflows. The
 > source, the data model and the manifests live in a private Forgejo repository. Host names,
@@ -21,14 +23,18 @@ everything around them is built as it would be for a real one.
 
 | | |
 |---|---|
-| **Fabric** | 2 spines, 3 leafs (one vPC pair), 2 border leafs; Cisco Nexus 9000v, NX-OS 10.5(3) |
-| **Design** | OSPF underlay, PIM bidir for BUM traffic, iBGP EVPN overlay with the spines as route reflectors, anycast gateway, eBGP per tenant at the border |
-| **Tenants** | 4 VRFs, 7 networks, route leaking to a shared-services VRF |
+| **Fabric** | 14 switches in two sites and an inter-site network; Cisco Nexus 9000v, NX-OS 10.5(3) |
+| **DC-1** (AS 65001) | 2 spines, 4 leafs (one vPC pair), 2 border leafs |
+| **DC-2** (AS 65002) | 2 spines, 2 leafs |
+| **Inter-site network** (AS 65000) | 2 routers; the spines of both sites are VXLAN EVPN Multi-Site border gateways |
+| **Design** | Per site: OSPF underlay, PIM with an anycast rendezvous point for BUM traffic, iBGP EVPN overlay with the spines as route reflectors, anycast gateway. Between the sites: eBGP. To the outside: eBGP per tenant at DC-1's border |
+| **Tenants** | 4 VRFs, 7 networks, the same in both sites; route leaking to a shared-services VRF |
 | **Source of truth** | An Ansible data model in Git, checked against a JSON schema; NetBox is the record and is compared with it |
 | **Change control** | One ticket per change, a dry run before approval, a gate before every deploy |
 | **Deploy** | Checkpoint, canary batches, tests, automatic rollback |
-| **Tests** | pyATS control and data plane tests, 10 Batfish checks, drift checks twice a day |
+| **Tests** | pyATS control and data plane tests, 14 Batfish checks, drift checks twice a day |
 | **Observability** | gNMI, SNMP, syslog and traps; 18 alarm rules that open and close their own tickets |
+| **New switches** | Zero-touch: declared in the model, provisioned by a POAP server, joined by a deploy |
 | **Platform** | Single-node Talos Kubernetes, Flux GitOps, signed images only |
 | **People** | One human owner; five AI agents with separate accounts, tokens and limits |
 
@@ -37,6 +43,9 @@ everything around them is built as it would be for a real one.
 - **A fabric as a data model.** Tenants, networks and ports are a few lines of YAML. Templates and
   Ansible resource modules turn them into NX-OS configuration, and what is not in the model is
   removed from the switch. → [The fabric](docs/fabric.md), [a worked example](docs/example-add-a-network.md)
+- **A fabric that grew through its own pipeline.** A fourth leaf, a second site and the network
+  between them were added in one week: seven switches provisioned zero-touch, and the spines turned
+  into Multi-Site border gateways one change at a time. → [Multi-Site](docs/multisite.md)
 - **A pipeline that touches real switches safely.** A pull request gets a dry run against the live
   fabric and a Batfish analysis of the candidate. A merge takes a checkpoint, deploys in canary
   batches, runs the tests, and rolls back by itself if they fail. → [The pipeline](docs/pipeline.md)
@@ -94,8 +103,10 @@ arrives and the approval stops counting.*
 
 ![The fabric on the EVE-NG canvas](assets/eve-ng-topology.png)
 
-*The lab in EVE-NG: seven Nexus 9000v, an external router beyond the border leafs, and six lab
-hosts that the data plane tests log in to.*
+*The first site as it stood on 19 November 2026: seven Nexus 9000v, an external router beyond the
+border leafs, and six lab hosts that the data plane tests log in to. The lab now holds fourteen
+switches: a fourth leaf here, the four switches of DC-2 and the two inter-site routers.
+→ [The topology today](docs/fabric.md#topology)*
 
 ## Technology
 
@@ -119,6 +130,7 @@ hosts that the data plane tests log in to.*
 |---|---|
 | [Architecture](docs/architecture.md) | The components, where each runs, how they depend on each other |
 | [The fabric](docs/fabric.md) | Topology, underlay and overlay, tenants, the data model |
+| [Multi-Site](docs/multisite.md) | The second site, the inter-site network, border gateways on the spines, how it was built |
 | [The pipeline](docs/pipeline.md) | Pull request and merge pipelines, tests, Batfish, rollback, drift |
 | [The change workflow](docs/change-workflow.md) | Ticket states, who may do what, what enforces it, a real run |
 | [Observability](docs/observability.md) | Telemetry sources, alarm rules, alarm tickets, dashboards |
@@ -150,9 +162,13 @@ hosts that the data plane tests log in to.*
 
 ## Status
 
-A working lab, built and run by one person; this overview describes it as of November 2026. It is
-not a product and not a production network: the switches are virtual, the scale is small, and
+A working lab, built and run by one person; this overview describes it as of 25 November 2026. It
+is not a product and not a production network: the switches are virtual, the scale is small, and
 the platform is a single node by design.
+
+In progress: the tenants are stretched on DC-2's border gateways; DC-1's spines follow one at a
+time, and the tests that ping from one site to the other wait for a lab host in DC-2.
+→ [Multi-Site](docs/multisite.md#where-it-stands)
 
 Planned next: asking an agent a question from Mission Control, with the answer tied to the
 evidence on the page.

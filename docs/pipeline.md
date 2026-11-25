@@ -47,12 +47,16 @@ runner at all.
 
 Batfish builds a model of the network from configurations and answers questions about it without
 any device. Here it gets the *candidate*: the running configurations with the dry run's commands
-applied. Ten checks:
+applied. Fourteen checks:
 
-- every leaf-spine OSPF adjacency and BGP EVPN session comes up;
+- every leaf has its OSPF adjacency and its BGP EVPN session to every spine of its own site;
+- every EVPN session of a site stays inside the site and runs in the site's AS, and the border
+  gateways of a site that declare each other are peers;
+- the inter-site routers peer with each other and learn the loopbacks of every border gateway;
 - the border's eBGP sessions come up, one per external tenant;
-- each L2VNI is where the model says, with its VLAN and multicast group, and nowhere else;
-- each L3VNI is on every leaf; each gateway is in the right VRF with the right address;
+- each L2VNI is where the model says, on the leafs with networks and on the border gateways that
+  carry the tenants, and nowhere else;
+- each L3VNI is on every leaf and on those gateways; each gateway address is in the right VRF;
 - the external router receives exactly the external tenants' networks and nothing internal;
 - the border leafs learn the default route;
 - no undefined references, no unparsed lines beyond a known list.
@@ -68,12 +72,12 @@ pass all of them.
 
 | Step | What it does | If it fails |
 |---|---|---|
-| Deploy decision | Maps the changed files to *tenant*, *full* or *none* | No usable base commit means *full* |
+| Deploy decision | Maps the changed files to *tenant*, *full* or *none*. A tenant change deploys *full* while a border gateway carries the tenants: the gateways are spines | No usable base commit means *full* |
 | **Change gate** | Requires a `Change: #n` trailer, the ticket approved by the owner, an error-free dry run of the merged change with Batfish passed, and the approval later than that dry run | The job stops before anything touches a switch |
 | Snapshot | Learns the operational state (BGP, OSPF, VXLAN, interfaces, routing) | |
 | **Checkpoint** | An NX-OS checkpoint on every switch to be touched | No checkpoint, no deploy |
 | Ticket | Moves the change ticket to *implementing*, with the pipeline's own account | Reported; never stops a deploy |
-| **Canary** | Deploys in batches without saving: one leaf first, then (for *full*) one spine, then the rest. Each batch is tested, including pings from the lab hosts through the half-changed fabric | The first failing batch stops the rollout |
+| **Canary** | Deploys in batches without saving: one leaf first, then (for *full*) one spine, then the rest, across both sites. Each batch is tested, including pings from the lab hosts through the half-changed fabric. A change that both ends of a link need at once is marked to deploy in one batch | The first failing batch stops the rollout |
 | Tests | The full pyATS run | Rollback |
 | Save | Writes the startup configuration; keeps the three newest checkpoints | |
 | **Rollback** | An atomic rollback to the checkpoint on every switch that differs from it, read back, then the tests again | A failed rollback is never retried: it alarms and waits for a person |
@@ -90,7 +94,8 @@ tested from the moment it is merged. The state is read with pyATS and Genie pars
 
 | | What is checked |
 |---|---|
-| **Control plane** | EVPN neighbours established; each tenant VRF up and no VRF that should not exist; L2 and L3 VNIs up; the exact set of VTEP peers; route targets; the border's eBGP sessions per tenant; vPC health; CPU, memory and core files; the telemetry certificate |
+| **Control plane** | EVPN neighbours and OSPF adjacencies established, inside each site; the site's rendezvous point; each tenant VRF up and no VRF that should not exist; L2 and L3 VNIs up; the exact set of VTEP peers; route targets; the border's eBGP sessions per tenant; vPC health; CPU, memory and core files; the telemetry certificate |
+| **Between the sites** | On every border gateway: its VXLAN interface up with its own and its site's shared address, the links to the fabric and to the inter-site network tracked and up, the sessions to the inter-site router and to the other site's gateways; on a gateway that carries the tenants: every L2VNI replicated to the other site; on the inter-site routers: their sessions and each other's loopback, by ping as well |
 | **Data plane** | From the lab hosts, over their consoles: the gateway answers; the outside is reachable; hosts of one tenant reach each other; a tenant reaches shared services; tenants do **not** reach each other; a host without external access does **not** get out |
 
 Fourteen test cases, each looping over the switches or host pairs it applies to: 74 results in a

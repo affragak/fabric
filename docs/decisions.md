@@ -85,6 +85,14 @@ the site and deploys nothing else.
 | One read-only status page | Buttons that act | The page can then be trusted with every account it uses, and shown to anyone |
 | What must survive the cluster runs off it | Everything on Kubernetes | Identity, secrets, backups, the cluster's management and the agents are needed exactly when the cluster is down |
 | Fast OSPF timers in the lab | Waiting for BFD | The virtual switch accepts BFD and never runs it; measured, the timers cut a silent failure from 39 seconds to 6 |
+| Two sites as two fabrics, each with its own AS, joined by Multi-Site | One fabric stretched over both | A site keeps its own underlay, route reflectors and failure domain; only the border gateways know about the other site |
+| The border gateways are the spines | Dedicated gateway switches | The lab is cabled that way and the platform supports it. The price: spines that are route reflectors do not hear each other's routes, so the gateways of a site need a session of their own to agree on who forwards flooded traffic |
+| PIM sparse mode with an anycast rendezvous point | PIM bidir, which the first site ran | The vendor does not support bidir under Multi-Site. That NX-OS accepts the configuration was not taken as support |
+| A site is a group in the inventory | Site values spread over role files | A switch is in exactly one site, validation refuses anything else, and the tests, Batfish and the status page all read the sites from the same place |
+| A change that both ends of a link need at once deploys in one batch | Always the canary | The canary tests a batch before the next is deployed; a session whose other end is in a later batch would fail and roll the change back. Checkpoint, tests and rollback stay |
+| DC-1's spines change one at a time | Both in one deploy | They are the site's route reflectors and rendezvous points; DC-1 never changes both in one deploy, and each new step was proven on DC-2 first |
+| A new switch is declared before it exists | Adding it to the inventory at once | The pipeline would fail on a switch it cannot reach. Declared apart, it is validated and provisioned, and joins by a deploy once it answers |
+| The vault signs switch certificates inside a workflow run | The owner signing each one by hand | With twice the switches and a renewal every year, signing by hand was the slow part and no safer. The run logs in with its own short-lived token, only from `main`, and signs only what the data model names |
 
 ## Limits
 
@@ -97,7 +105,12 @@ What this lab is not, and what it does not claim.
   this lab was once triaged to a counter that jumped by 2³¹ in one step.
 - **No BFD.** It is in the model and never comes up. Convergence numbers here are evidence of a
   method, not of what hardware would do.
-- **Small.** Seven switches, four tenants. Nothing here was tested for scale.
+- **Small.** Fourteen switches in two sites, four tenants. Nothing here was tested for scale.
+- **One path between the sites.** DC-1's spines connect to one inter-site router, DC-2's to the
+  other, and one link joins the two. Any of the three failing cuts the sites apart, so the lab
+  cannot test an inter-site failure that leaves the sites connected.
+- **No host in DC-2 yet.** The control plane between the sites is tested; traffic from a host in
+  one site to a host in the other is not, until DC-2 has a lab host.
 - **A noisy host.** The whole lab stalls for up to four seconds every few minutes, and every
   measurement has to live above that.
 
@@ -116,8 +129,12 @@ What this lab is not, and what it does not claim.
 - **The dry run is not a guarantee.** Check mode does not send commands, so it cannot learn that a
   switch will refuse one. The canary, the checkpoint and the tests exist for exactly that, and
   have been needed.
+- **Batfish does not model Multi-Site.** It checks the sessions between the sites and what each
+  switch should carry. Replication between the sites and a border gateway's re-origination of the
+  other site's routes are outside its model; the tests on the switches cover those.
 - **The external router is configured by hand.** It stands for someone else's network and is
-  outside the model.
+  outside the model. The inter-site routers are not: they are in the model and deployed by the
+  pipeline like every switch.
 - **The platform's gate is lighter than the fabric's.** It checks that a change has an approved
   ticket, not the order of approval and dry run.
 - **Agents do not act on the fabric.** Not in an emergency either: the fast path is a revert
@@ -128,5 +145,6 @@ What this lab is not, and what it does not claim.
 ## Next
 
 - [Security](security.md): the measures these decisions led to
+- [Multi-Site](multisite.md): the decisions of the second site, in order
 - [Game days](game-days.md): the measurements behind the timers
 - [FAQ](faq.md)

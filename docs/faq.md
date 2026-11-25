@@ -5,8 +5,9 @@
 ## About the project
 
 **Is this a production network?**
-No. It is a lab: seven virtual Nexus switches, four tenants, one person. Everything around the
-switches is built as it would be for a real fabric, which is the point of it. What a lab cannot
+No. It is a lab: fourteen virtual Nexus switches in two sites, four tenants, one person.
+Everything around the switches is built as it would be for a real fabric, which is the point of
+it. What a lab cannot
 show is listed under [limits](decisions.md#limits).
 
 **Can I see the source?**
@@ -15,11 +16,11 @@ manifests are kept in their own repository. The pages quote the real artefacts w
 a diff, a dry-run table, a ticket, a report.
 
 **What does it take to build something like it?**
-A server that can run the virtual switches (here eight cores, bare metal), a small machine for
-the cluster (here one node with 14 GB of memory), something small that stays up when the cluster
-does not (here a Raspberry Pi 5), and storage for backups and secrets. In licences: the lab
-software's professional edition and the vendor's virtual switch image. Everything else is open
-source. The order to build it in is on the [setup](setup.md) page.
+A server that can run the virtual switches (here eight cores and 128 GB of memory, bare metal),
+a small machine for the cluster (here one node with 14 GB of memory), something small that stays
+up when the cluster does not (here a Raspberry Pi 5), and storage for backups and secrets. In
+licences: the lab software's professional edition and the vendor's virtual switch image.
+Everything else is open source. The order to build it in is on the [setup](setup.md) page.
 
 **Would it work on real hardware?**
 The data model, the pipeline and the workflow do not care. Three things would differ: BFD would
@@ -40,7 +41,7 @@ not a habit but a condition.
 It sometimes is. Check mode does not send commands, so it cannot know that a switch will refuse
 one. That is why a deploy takes a checkpoint first, starts with one leaf, tests after every
 batch, and rolls back by itself. It has been needed: a change with an out-of-range timer value
-was stopped at the first leaf and rolled back, with the other six switches never touched.
+was stopped at the first leaf and rolled back, with no other switch touched.
 
 **How long does a change take?**
 The deploy itself: roughly twenty minutes for a tenant change, about half an hour for a full
@@ -92,7 +93,26 @@ request, starting the dry run when the run is released, reading its output again
 reporting the deploy, verifying on the switches, and triaging every alarm within minutes. The
 decisions stay with the owner.
 
+**How does a new switch get into the fabric?**
+Nobody types on it. It is declared in the data model, a POAP server gives it a minimal first
+configuration at power-on, a pull request pins its host key, a workflow enrols its telemetry
+certificate, and a last pull request joins it through the ordinary pipeline. Seven of the
+fourteen switches came in that way. The steps are on the [setup](setup.md#2-day-zero-on-each-switch)
+page.
+
 ## About the design
+
+**Why two sites?**
+To show that the method carries further than one fabric. A second site with its own AS, an
+inter-site network and Multi-Site border gateways were added through the same data model, the
+same pipeline and the same change tickets, while the first site kept running. What that took,
+and what it found, is on the [Multi-Site](multisite.md) page.
+
+**Do the two sites work as one network yet?**
+The control plane does: every border gateway of one site has its EVPN sessions to the gateways
+of the other, and the tests require them. The tenants are stretched on DC-2's gateways; DC-1's
+follow one spine at a time. Traffic between hosts of the two sites is not tested yet, because
+DC-2 has no lab host. The page says [where it stands](multisite.md#where-it-stands).
 
 **Why is NetBox not the source of truth?**
 Because the model in Git is what is reviewed, versioned and deployed. NetBox is the record, kept
@@ -115,4 +135,5 @@ has exactly one path, and the page is not on it.
 ## Next
 
 - [Decisions and limits](decisions.md)
+- [Multi-Site](multisite.md)
 - [A worked example](example-add-a-network.md)
